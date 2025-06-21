@@ -1,5 +1,3 @@
-
-
 # 📷 Introduction
 
 **rssegmentation** is an open-source semantic segmentation toolbox, which is dedicated to reproducing and developing advanced methods for semantic segmentation of remote sensing images.
@@ -7,179 +5,214 @@
 <div align="center">
   <b>Overview</b>
 </div>
-<table align="center">
-  <tbody>
-    <tr align="center" valign="center">
-      <td>
-        <b>Methods</b>
-      </td>
-      <td>
-        <b>Datasets</b>
-      </td>
-      <td>
-        <b>Tools</b>
-      </td>
-    </tr>
-	<tr valign="top">
-      <td>
-        <ul>
-          <li><a href="https://ieeexplore.ieee.org/abstract/document/10095835/">LoG-Can (ICASSP2023) </a></li>
-          <li><a href="https://ieeexplore.ieee.org/abstract/document/10219583/">SACANet (ICME2023)</a></li>
-       		<li><a href="https://ieeexplore.ieee.org/abstract/document/10381808/">DOCNet (GRSL2024)</a></li>
-          <li><a href="https://ieeexplore.ieee.org/document/10884928/">LOGCAN++(TGRS2025)</a></li>
-          <li><a href="https://www.sciencedirect.com/science/article/pii/S0924271625000255?via%3Dihub">SCSM (ISPRS2025)</a></li>
-          <li>CenterSeg (Under review)</a></li>
-        </ul>
-      </td>
-<td>
-        <ul>
-          <li><a href="https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx">Vaihingen </a></li>
-          <li><a href="https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx">Potsdam</a></li>
-       		<li><a href="https://codalab.lisn.upsaclay.fr/competitions/421">LoveDA</a></li>
-          <li>iSAID(to do)</a></li>
-        </ul>
-      </td>
-<td>
-        <ul>
-          <li>Training </a></li>
-          <li>Testing</a></li>
-       		<li>Params, FLOPs, Latency, Throughput </a></li>
-			<li>Class activation map </a></li>
-			<li>TSNE map </a></li>
-        </ul>
-      </td>
-</table>
 
+| Methods | Datasets | Tools |
+|--------|----------|-------|
+| - [LoG-Can (ICASSP2023)](https://ieeexplore.ieee.org/abstract/document/10095835/) <br> - [SACANet (ICME2023)](https://ieeexplore.ieee.org/abstract/document/10219583/) <br> - [DOCNet (GRSL2024)](https://ieeexplore.ieee.org/abstract/document/10381808/) <br> - [LOGCAN++ (TGRS2025)](https://ieeexplore.ieee.org/document/10884928/) <br> - [SCSM (ISPRS2025)](https://www.sciencedirect.com/science/article/pii/S0924271625000255?via%3Dihub) <br> - CenterSeg (Under review) | - [Vaihingen](https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx) <br> - [Potsdam](https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx) <br> - [LoveDA](https://codalab.lisn.upsaclay.fr/competitions/421) <br> - iSAID (to do) | - Training <br> - Testing <br> - Params, FLOPs, Latency, Throughput <br> - Class activation map <br> - TSNE map |
 
+---
 
+## 📐 MACs Calculation
 
-# 📒 Folder Structure
+Multiply–Accumulate Operations (MACs) are calculated as:
+
+```
+MACs = 2 × Kernel Size × Input Channels × Output Channels × Output Width × Output Height
+```
+
+Example for a `Conv2D` layer:
+
+- Input Channels = 3 (RGB)
+- Output Channels = 40
+- Kernel Size = 3×3 = 9
+- Stride = 2
+- Padding = 1
+- Input Size = 224×224
+
+You can calculate MACs using the above formula after deriving the output feature map dimensions.
+
+---
+
+## 🏆 Which is Better for Satellite Image Segmentation?
+
+- ✅ If **accuracy** is top priority: use ResNet-based DeepLabV3+, U-Net, etc.
+- ⚡ If **real-time segmentation** is needed (e.g., drones): use lightweight models like **RepViT**.
+
+---
+
+## ⚙️ RepViTBlock Components
+
+### 1. **Token Mixer**
+- Responsible for spatial feature extraction.
+- Uses:
+  - `RepVGGDW`: depthwise convolution
+  - `SEModule`: adds lightweight attention
+
+### 2. **RepVGGDW**
+- Depthwise conv applied per input channel.
+- Efficient with reduced computational complexity.
+- Derived from RepVGG architecture for faster inference.
+
+### 3. **SEModule (Squeeze-and-Excitation)**
+- Provides channel-wise attention.
+- Architecture:
+  - `fc1` → `ReLU` → `fc2` → `Sigmoid`
+- Enhances important features while suppressing noise.
+
+### 4. **Channel Mixer**
+- Applies 1×1 convolutions for channel-wise mixing.
+- Implemented as a residual block with:
+  - Two `Conv2D_BN` layers
+  - `GELU` activation
+
+### 5. **GELU Activation**
+Smoother than ReLU, used in transformers and modern conv nets.
+
+```
+GELU(x) = 0.5 * x * (1 + tanh(√(2/π) * (x + 0.044715x^3)))
+```
+
+---
+
+## 🔍 RepViTBlock Layer Comparison
+
+| Property        | Block (2)            | Block (53)            |
+|----------------|----------------------|------------------------|
+| Params         | 26.48K               | 1.851M                |
+| MACs           | 433.848M             | 421.438M              |
+| Channel Size   | 80                   | 640                   |
+| SE Module      | ❌ No                | ✅ Yes                |
+
+- **Block 2**: Lightweight and early-stage processing
+- **Block 53**: High-capacity, deeper-layer block with attention
+
+---
+
+## 📈 Functional Purpose in Segmentation
+
+- Early layers (e.g., Block 2):
+  - Extract low-level textures and edges
+  - Lightweight and fast
+
+- Deeper layers (e.g., Block 53):
+  - Capture global context and semantics
+  - Use SE attention for enhanced channel representation
+
+✅ Alternating light-heavy block structure improves overall balance between **efficiency** and **feature expressiveness**
+
+---
+
+## 📒 Folder Structure
 
 <details>
-<summary>
-Prepare the following folders to organize this repo:
-</summary>
+<summary>Prepare the following folders to organize this repo:</summary>
 
 ```
 rssegmentation
-├── rsseg (core code for datasets and models)
-├── tools (some useful tools)
-├── work_dirs (save the model weights and training logs)
+├── rsseg
+├── tools
+├── work_dirs
 ├── data
 │   ├── LoveDA
-│   │   ├── Train
-│   │   │   ├── Urban
-│   │   │   │   ├── images_png (original images)
-│   │   │   │   ├── masks_png (original labels)
-│   │   │   ├── Rural
-│   │   │   │   ├── images_png (original images)
-│   │   │   │   ├── masks_png (original labels)
-│   │   ├── Val (the same with Train)
+│   │   ├── Train/Urban/images_png, masks_png
+│   │   ├── Train/Rural/images_png, masks_png
+│   │   ├── Val
 │   │   ├── Test
 │   ├── vaihingen
-│   │   ├── ISPRS_semantic_labeling_Vaihingen 
-│   │   │   ├── top (original images)
-│   │   ├── ISPRS_semantic_labeling_Vaihingen_ground_truth_COMPLETE (original labels)
-│   │   ├── ISPRS_semantic_labeling_Vaihingen_ground_truth_eroded_COMPLETE (original noBoundary lables)
-│   │   ├── train (processed)
-│   │   ├── test (processed)
-│   ├── potsdam (the same with vaihingen)
-│   │   ├── 2_Ortho_RGB (original images)
-│   │   ├── 5_Labels_all (original labels)
-│   │   ├── 5_Labels_all_noBoundary (original noBoundary lables)
-│   │   ├── train (processed)
-│   │   ├── test (processed)
+│   │   ├── ISPRS_semantic_labeling_Vaihingen
+│   │   ├── ISPRS_semantic_labeling_Vaihingen_ground_truth_COMPLETE
+│   │   ├── ISPRS_semantic_labeling_Vaihingen_ground_truth_eroded_COMPLETE
+│   │   ├── train
+│   │   ├── test
+│   ├── potsdam
+│   │   ├── 2_Ortho_RGB
+│   │   ├── 5_Labels_all
+│   │   ├── 5_Labels_all_noBoundary
+│   │   ├── train
+│   │   ├── test
 ```
+
 </details>
 
+---
 
-# 🔐 Preparation
+## 🔐 Preparation
 
-- **Environment**
+### Environment
 
-```shell
+```bash
 conda create -n rsseg python=3.9
 conda activate rsseg
 conda install pytorch==2.0.0 torchvision==0.15.0 torchaudio==2.0.0 pytorch-cuda=11.7 -c pytorch -c nvidia
 pip install -r requirements.txt
 ```
 
-- **Data Preprocess**
+### Data Preprocess
 
-```shell
-# Modify img-dir and mask-dir if necessary
+```bash
 bash tools/vaihingen_preprocess.sh 
 bash tools/potsdam_preprocess.sh 
 ```
 
-Note: We also provide the preprocessed [vaihingen](https://pan.baidu.com/s/18zLMK8-gleYFyyXl-OWHrg) and [potsdam](https://pan.baidu.com/s/1qunEBhLH_GhqsnU6ZVK6TQ) dataset.
+📦 Preprocessed datasets available:
+- [Vaihingen](https://pan.baidu.com/s/18zLMK8-gleYFyyXl-OWHrg)
+- [Potsdam](https://pan.baidu.com/s/1qunEBhLH_GhqsnU6ZVK6TQ)
 
+---
 
-
-# 📚 Use example
+## 📚 Use Example
 
 ### 1️⃣ Training
 
-```shell
+```bash
 python train.py -c configs/vaihingen/logcanplus.py
 ```
 
 ### 2️⃣ Testing
 
-- **Vaihingen and Potsdam**
-
-```shell
-python test.py \
--c configs/vaihingen/logcanplus.py \
---ckpt work_dirs/logcanplus_vaihingen/epoch=45.ckpt \
+#### Vaihingen and Potsdam
+```bash
+python test.py -c configs/vaihingen/logcanplus.py --ckpt work_dirs/logcanplus_vaihingen/epoch=45.ckpt
 ```
 
-- **LoveDA**
+#### LoveDA (for online evaluation)
 
-Note that since the loveda dataset needs to be evaluated online, we provide the corresponding test commands.
-
-```shell
-python online_test.py \
--c configs/loveda/logcanplus.py \
---ckpt work_dirs/logcanplus_loveda/epoch=45.ckpt \
+```bash
+python online_test.py -c configs/loveda/logcanplus.py --ckpt work_dirs/logcanplus_loveda/epoch=45.ckpt
 ```
 
-### 3️⃣ Useful tools
+---
 
-- **Param and FLOPs**
+## 🛠️ Tools
 
-```shell
-python tools/flops_params_count.py -c configs/vaihingen/logcanplus.py 
-```
-- **Latency**
+### Param and FLOPs
 
-```shell
-python tools/latency_count.py \
--c configs/vaihingen/logcanplus.py \
---ckpt work_dirs/logcanplus_vaihingen/epoch=45.ckpt \
-```
-- **Throughput**
-
-```shell
-  python tools/throughput_count.py -c configs/vaihingen/logcanplus.py
+```bash
+python tools/flops_params_count.py -c configs/vaihingen/logcanplus.py
 ```
 
-- **Class activation map**
+### Latency
 
-```shell
-python tools/cam.py \
--c configs/vaihingen/logcanplus.py \
---ckpt work_dirs/logcanplus_vaihingen/epoch=45.ckpt \
---tar_layer "model.net.seghead.catconv2[-2]" \
---tar_category 1
+```bash
+python tools/latency_count.py -c configs/vaihingen/logcanplus.py --ckpt work_dirs/logcanplus_vaihingen/epoch=45.ckpt
 ```
 
-* **TSNE map**
+### Throughput
 
-```shell
-  python tools/tsne.py \
-  -c configs/vaihingen/logcanplus.py \
-  --ckpt work_dirs/logcanplus_vaihingen/epoch=45.ckpt 
+```bash
+python tools/throughput_count.py -c configs/vaihingen/logcanplus.py
 ```
 
-  
+### Class Activation Map
+
+```bash
+python tools/cam.py -c configs/vaihingen/logcanplus.py --ckpt work_dirs/logcanplus_vaihingen/epoch=45.ckpt --tar_layer "model.net.seghead.catconv2[-2]" --tar_category 1
+```
+
+### TSNE Map
+
+```bash
+python tools/tsne.py -c configs/vaihingen/logcanplus.py --ckpt work_dirs/logcanplus_vaihingen/epoch=45.ckpt
+```
+
+---

@@ -1,13 +1,3 @@
-![cap](./cap.jpg)
-
-# 🔥 News
-
-- `2025/3/18`: We add **TSNE map** and the **link of preprocessed dataset and checkpoints**.
-- `2025/3/14`: We fix some bugs and add **CAM** and **Throughput**.
-- `2025/2/11`: [LOGCAN++](https://arxiv.org/abs/2406.16502) has been accepted by TGRS2025!
-- `2025/1/24`: [SCSM](https://arxiv.org/abs/2501.13130) has been accepted by ISPRS2025!
-- `2024/10/11`: [SSA-Seg](https://arxiv.org/abs/2405.06525) has been accepted by NeurIPS2024! It is an effective and powerful classifier for semantic segmentation. We recommend interested researchers to optimize it for semantic segmentation in remote sensing, which is a promising direction.
-
 
 
 # 📷 Introduction
@@ -60,20 +50,6 @@
       </td>
 </table>
 
-
-# 🏆 Checkpoint
-
-| Model                                                        | Vaihingen<br>[Preprocessed](https://pan.baidu.com/s/18zLMK8-gleYFyyXl-OWHrg) | Potsdam<br>[Preprocessed](https://pan.baidu.com/s/1qunEBhLH_GhqsnU6ZVK6TQ) | LoveDA | iSAID |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------ | ----- |
-| [LoG-Can](https://ieeexplore.ieee.org/abstract/document/10095835/) | [83.0](https://pan.baidu.com/s/105FsojTUzztah8xcdet3FA)      | [86.4](https://pan.baidu.com/s/105FsojTUzztah8xcdet3FA)      | -      | -     |
-| [SACANet]()                                                  | [83.7](https://pan.baidu.com/s/1FFlDfa51r-bi-E9JcIDkJg )     | [86.8](https://pan.baidu.com/s/1FFlDfa51r-bi-E9JcIDkJg )     | -      | -     |
-| [DOCNet]()                                                   | [84.0](https://pan.baidu.com/s/1YOVR-u-imX9ZqH9bO0aaGA )     | [87.1](https://pan.baidu.com/s/1YOVR-u-imX9ZqH9bO0aaGA)      | -      | -     |
-| [LOGCAN++]()                                                 | [83.9](https://pan.baidu.com/s/1O5HmaXyUdRMXY34zHKn_Gg )     | [87.7](https://pan.baidu.com/s/1O5HmaXyUdRMXY34zHKn_Gg)      | -      | -     |
-| [SCSM]()                                                     | -                                                            | -                                                            | -      | -     |
-
-The backbone is provided at this [link](https://pan.baidu.com/s/1W-KFZ5Me1KbpiGwZv27qCA ). The password for all links is **xwma**
-
-Note: The above results are obtained on the A5000 GPU, which are affected by device and random seeds. For example, we have an average higher mIoU on the V100 GPU. The remaining checkpoints will be updated gradually.
 
 
 
@@ -207,72 +183,3 @@ python tools/cam.py \
 ```
 
   
-
-# 🌟 Citation
-
-<details>
-<summary>
-If you find our repo useful for your research, please consider giving a 🌟 and citing our work below.
-</summary>
-
-```
-@inproceedings{logcan,
-  title={Log-can: local-global class-aware network for semantic segmentation of remote sensing images},
-  author={Ma, Xiaowen and Ma, Mengting and Hu, Chenlu and Song, Zhiyuan and Zhao, Ziyan and Feng, Tian and Zhang, Wei},
-  booktitle={ICASSP 2023-2023 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
-  pages={1--5},
-  year={2023},
-  organization={IEEE}
-}
-@inproceedings{sacanet,
-  title={Sacanet: scene-aware class attention network for semantic segmentation of remote sensing images},
-  author={Ma, Xiaowen and Che, Rui and Hong, Tingfeng and Ma, Mengting and Zhao, Ziyan and Feng, Tian and Zhang, Wei},
-  booktitle={2023 IEEE International Conference on Multimedia and Expo (ICME)},
-  pages={828--833},
-  year={2023},
-  organization={IEEE}
-}
-
-@article{docnet,
-  title={DOCNet: Dual-Domain Optimized Class-Aware Network for Remote Sensing Image Segmentation},
-  author={Ma, Xiaowen and Che, Rui and Wang, Xinyu and Ma, Mengting and Wu, Sensen and Feng, Tian and Zhang, Wei},
-  journal={IEEE Geoscience and Remote Sensing Letters},
-  year={2024},
-  publisher={IEEE}
-}
-
-@ARTICLE{logcan++,
-  author={Ma, Xiaowen and Lian, Rongrong and Wu, Zhenkai and Guo, Hongbo and Yang, Fan and Ma, Mengting and Wu, Sensen and Du, Zhenhong and Zhang, Wei and Song, Siyang},
-  journal={IEEE Transactions on Geoscience and Remote Sensing}, 
-  title={LOGCAN++: Adaptive Local-Global Class-Aware Network For Semantic Segmentation of Remote Sensing Images}, 
-  year={2025},
-  volume={},
-  number={},
-  pages={1-1},
-  doi={10.1109/TGRS.2025.3541871}}
-
-@article{scsm,
-title = {A novel scene coupling semantic mask network for remote sensing image segmentation},
-journal = {ISPRS Journal of Photogrammetry and Remote Sensing},
-volume = {221},
-pages = {44-63},
-year = {2025},
-issn = {0924-2716},
-doi = {https://doi.org/10.1016/j.isprsjprs.2025.01.025},
-url = {https://www.sciencedirect.com/science/article/pii/S0924271625000255},
-author = {Xiaowen Ma and Rongrong Lian and Zhenkai Wu and Renxiang Guan and Tingfeng Hong and Mengjiao Zhao and Mengting Ma and Jiangtao Nie and Zhenhong Du and Siyang Song and Wei Zhang},
-}
-```
-</details>
-
-# 📮 Contact
-
-If you are confused about the content of our paper or look forward to further academic exchanges and cooperation, please do not hesitate to contact us. The e-mail address is xwma@zju.edu.cn. We look forward to hearing from you!
-
-# 💡 Acknowledgement
-
-Thanks to previous open-sourced repo:
-
-- [mmsegmentation](https://github.com/open-mmlab/mmsegmentation)
-- [pytorch lightning](https://lightning.ai/)
-- [fvcore](https://github.com/facebookresearch/fvcore)

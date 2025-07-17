@@ -99,7 +99,6 @@ python tools/cam2.py -c configs/vaihingen/logcanplus.py --ckpt work_dirs/logcanp
 
 
 
-https://maps.googleapis.com/maps/api/staticmap?center=16.833274,81.534441&zoom=21&size=1024x1024&maptype=satellite&key=AIzaSyClD_3Su1UrXOHlUYs9h9s3U0uU7yq_a0Y
 
 
 e:

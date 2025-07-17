@@ -1,0 +1,55 @@
+python tools/dataset_patch_split.py --dataset-type "vaihingen" \
+--img-dir "/mnt/d/rssegmentation/data/vaihingen/ISPRS_semantic_labeling_Vaihingen/top" \
+--mask-dir "/mnt/d/rssegmentation/data/vaihingen/ISPRS_semantic_labeling_Vaihingen_ground_truth_COMPLETE" \
+--output-img-dir "/mnt/d/rssegmentation/data/vaihingen/train/images_1024" \
+--output-mask-dir "/mnt/d/rssegmentation/data/vaihingen/train/masks_1024" \
+--split-size 1024 --stride 512 --mode "train"
+
+python tools/dataset_patch_split.py --dataset-type "vaihingen" \
+--img-dir "/mnt/d/rssegmentation/data/vaihingen/ISPRS_semantic_labeling_Vaihingen/top" \
+--mask-dir "/mnt/d/rssegmentation/data/vaihingen/ISPRS_semantic_labeling_Vaihingen_ground_truth_COMPLETE" \
+--output-img-dir "/mnt/d/rssegmentation/data/vaihingen/test/images_1024" \
+--output-mask-dir "/mnt/d/rssegmentation/data/vaihingen/test/masks_1024_RGB" \
+--split-size 1024 --stride 1024 --mode "test"
+
+python tools/dataset_patch_split.py --dataset-type "vaihingen" \
+--img-dir "/mnt/d/rssegmentation/data/vaihingen/ISPRS_semantic_labeling_Vaihingen/top" \
+--mask-dir "/mnt/d/rssegmentation/data/vaihingen/ISPRS_semantic_labeling_Vaihingen_ground_truth_eroded_COMPLETE" \
+--output-img-dir "/mnt/d/rssegmentation/data/vaihingen/test/images_1024" \
+--output-mask-dir "/mnt/d/rssegmentation/data/vaihingen/test/masks_1024" \
+--split-size 1024 --stride 1024 --mode "test"
+
+
+
+python tools/dataset_patch_split.py --dataset-type "potsdam" \
+--img-dir "/mnt/d/rssegmentation/data/potsdam/2_Ortho_RGB" \
+--mask-dir "/mnt/d/rssegmentation/data/potsdam/5_Labels_all" \
+--output-img-dir "/mnt/d/rssegmentation/data/potsdam/train/images_1024" \
+--output-mask-dir "/mnt/d/rssegmentation/data/potsdam/train/masks_1024" \
+--split-size 1024 --stride 512 --mode "train"
+
+python tools/dataset_patch_split.py --dataset-type "potsdam" \
+--img-dir "/mnt/d/rssegmentation/data/potsdam/2_Ortho_RGB" \
+--mask-dir "/mnt/d/rssegmentation/data/potsdam/5_Labels_all_noBoundary" \
+--output-img-dir "/mnt/d/rssegmentation/data/potsdam/test/images_1024" \
+--output-mask-dir "/mnt/d/rssegmentation/data/potsdam/test/masks_1024" \
+--split-size 1024 --stride 1024 --mode "test"
+
+python tools/dataset_patch_split.py --dataset-type "potsdam" \
+--img-dir "/mnt/d/rssegmentation/data/potsdam/2_Ortho_RGB" \
+--mask-dir "/mnt/d/rssegmentation/data/potsdam/5_Labels_all" \
+--output-img-dir "/mnt/d/rssegmentation/data/potsdam/test/images_1024" \
+--output-mask-dir "/mnt/d/rssegmentation/data/potsdam/test/masks_1024_RGB" \
+--split-size 1024 --stride 1024 --mode "test"
+
+
+
+
+
+
+
+
+
+python test.py \
+-c "configs/logcan.py" \
+--ckpt "work_dirs/LoGCAN_ResNet50_Loveda/epoch=47.ckpt" \

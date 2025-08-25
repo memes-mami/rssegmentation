@@ -1,16 +1,3 @@
-# 📷 Introduction
-
-**rssegmentation** is an open-source semantic segmentation toolbox, which is dedicated to reproducing and developing advanced methods for semantic segmentation of remote sensing images.
-
-<div align="center">
-  <b>Overview</b>
-</div>
-
-| Methods | Datasets | Tools |
-|--------|----------|-------|
-| - [LoG-Can (ICASSP2023)](https://ieeexplore.ieee.org/abstract/document/10095835/) <br> - [SACANet (ICME2023)](https://ieeexplore.ieee.org/abstract/document/10219583/) <br> - [DOCNet (GRSL2024)](https://ieeexplore.ieee.org/abstract/document/10381808/) <br> - [LOGCAN++ (TGRS2025)](https://ieeexplore.ieee.org/document/10884928/) <br> - [SCSM (ISPRS2025)](https://www.sciencedirect.com/science/article/pii/S0924271625000255?via%3Dihub) <br> - CenterSeg (Under review) | - [Vaihingen](https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx) <br> - [Potsdam](https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx) <br> - [LoveDA](https://codalab.lisn.upsaclay.fr/competitions/421) <br> - iSAID (to do) | - Training <br> - Testing <br> - Params, FLOPs, Latency, Throughput <br> - Class activation map <br> - TSNE map |
-
----
 
 ## 📐 MACs Calculation
 
@@ -216,3 +203,4 @@ python tools/tsne.py -c configs/vaihingen/logcanplus.py --ckpt work_dirs/logcanp
 ```
 
 ---
+
